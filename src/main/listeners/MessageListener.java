@@ -15,6 +15,9 @@ public class MessageListener {
 
     @EventSubscriber
     public void onMessagReceivedEvent(MessageReceivedEvent e) throws RateLimitException, DiscordException, MissingPermissionsException {
+        if (e.getMessage().getContent().equalsIgnoreCase("who the best?")) {
+            e.getMessage().reply("\nyou da best");
+        }
         String msg[] = e.getMessage().getContent().split(" ");
         switch (msg[0]) {
             case "!factions" :
