@@ -12,7 +12,7 @@ public class DiscordBot {
 
     public static void main(String[] args) {
         IDiscordClient client = createClient(TOKEN, true);
-        //noinspection NullableProblems
+        //noinspection ConstantConditions
         EventDispatcher dispatcher = client.getDispatcher();
         dispatcher.registerListener(new MessageListener());
     }
