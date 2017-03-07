@@ -1,5 +1,5 @@
 <component name="libraryTable">
-  <library name="Discord4J">
+  <library name="Discord4j">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/src/libraries/Discord4j-2.7.0-shaded.jar!/" />
     </CLASSES>

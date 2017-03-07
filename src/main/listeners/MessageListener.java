@@ -1,6 +1,9 @@
 package main.listeners;
 
+<<<<<<< HEAD
 import sun.plugin2.message.Message;
+=======
+>>>>>>> nvlbravo/development
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
@@ -8,16 +11,27 @@ import sx.blah.discord.util.DiscordException;
 import sx.blah.discord.util.MissingPermissionsException;
 import sx.blah.discord.util.RateLimitException;
 
+<<<<<<< HEAD
 import java.sql.DriverManager;
 import java.util.Arrays;
 import java.util.List;
 import java.sql.*;
+=======
+import java.util.Arrays;
+import java.util.List;
+>>>>>>> nvlbravo/development
 
 public class MessageListener {
     private List<String> factionList = Arrays.asList("Sturgians", "Aserai", "Khuzaits", "Baltanians", "Vlandians");
 
     @EventSubscriber
     public void onMessagReceivedEvent(MessageReceivedEvent e) throws RateLimitException, DiscordException, MissingPermissionsException {
+<<<<<<< HEAD
+=======
+        if (e.getMessage().getContent().equalsIgnoreCase("who the best?")) {
+            e.getMessage().reply("\nyou da best");
+        }
+>>>>>>> nvlbravo/development
         String msg[] = e.getMessage().getContent().split(" ");
         switch (msg[0]) {
             case "!factions" :
@@ -36,6 +50,7 @@ public class MessageListener {
             case "!roll" :
                 sendMessage(e.getMessage().getAuthor().getName() + " rolled " + Integer.toString((int)(Math.random() * 100)), e);
                 break;
+<<<<<<< HEAD
             case "!user":
                 String usr = databaseUser(e);
                 sendMessage2(usr ,e);
@@ -104,6 +119,11 @@ public class MessageListener {
         }
         return false;
     }
+=======
+        }
+
+    }
+>>>>>>> nvlbravo/development
 
     private void setFaction(String msg[], MessageReceivedEvent e) throws RateLimitException, DiscordException, MissingPermissionsException {
         String faction = msg[1].substring(0, 1).toUpperCase() + msg[1].substring(1).toLowerCase();
@@ -124,6 +144,7 @@ public class MessageListener {
         }
     }
 
+<<<<<<< HEAD
     public String databaseUser(MessageReceivedEvent m) {
         String user = null;
         try {
@@ -190,3 +211,9 @@ public class MessageListener {
     }
 }
 
+=======
+    private void sendMessage(String msg, MessageReceivedEvent e) throws RateLimitException, DiscordException, MissingPermissionsException {
+        e.getMessage().getChannel().sendMessage(msg);
+    }
+}
+>>>>>>> nvlbravo/development
