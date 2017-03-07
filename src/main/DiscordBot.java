@@ -1,10 +1,7 @@
 package main;
 
 import main.listeners.MessageListener;
-<<<<<<< HEAD
 import org.apache.commons.lang3.ObjectUtils;
-=======
->>>>>>> nvlbravo/development
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
