@@ -7,16 +7,15 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Discord4j-2.7.0-shaded1" level="project" />
-    <orderEntry type="library" name="Discord4j-2.7.0-shaded" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/mysql-connector.jar!/" />
+          <root url="jar://$MODULE_DIR$/src/libraries/mysql-connector.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="Discord4J" level="project" />
   </component>
 </module>
