@@ -1,6 +1,7 @@
 package main;
 
-import main.listeners.AnnotationListener;
+import main.listeners.MessageListener;
+import org.apache.commons.lang3.ObjectUtils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
@@ -11,8 +12,9 @@ public class DiscordBot {
 
     public static void main(String[] args) {
         IDiscordClient client = createClient(TOKEN, true);
+        //noinspection ConstantConditions
         EventDispatcher dispatcher = client.getDispatcher();
-        dispatcher.registerListener(new AnnotationListener());
+        dispatcher.registerListener(new MessageListener());
     }
 
     private static IDiscordClient createClient(String token, boolean login) {
