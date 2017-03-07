@@ -1,6 +1,7 @@
 package main;
 
 import main.listeners.MessageListener;
+import org.apache.commons.lang3.ObjectUtils;
 import sx.blah.discord.api.ClientBuilder;
 import sx.blah.discord.api.IDiscordClient;
 import sx.blah.discord.api.events.EventDispatcher;
