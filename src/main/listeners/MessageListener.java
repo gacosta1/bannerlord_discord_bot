@@ -143,22 +143,24 @@ public class MessageListener {
             Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT * from Stats WHERE Username = '" + otherUser + "'");
-            if(!result.next()) {
+            if(!result.isBeforeFirst()) {
                 m.getMessage().reply("No User with that name! Sorry :frowning:");
                 return null;
             }
+            else {
 
-            while (result.next()) {
-                user = result.getString("Username");
-                win = result.getString("Wins");
-                loss = result.getString("Losses");
-                kills = result.getString("Kills");
-                death = result.getString("Deaths");
-                stats.add(user);
-                stats.add(win);
-                stats.add(loss);
-                stats.add(kills);
-                stats.add(death);
+                while (result.next()) {
+                    user = result.getString("Username");
+                    win = result.getString("Wins");
+                    loss = result.getString("Losses");
+                    kills = result.getString("Kills");
+                    death = result.getString("Deaths");
+                    stats.add(user);
+                    stats.add(win);
+                    stats.add(loss);
+                    stats.add(kills);
+                    stats.add(death);
+                }
             }
 
         } catch (SQLException e) {
