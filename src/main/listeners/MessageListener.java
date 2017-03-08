@@ -1,5 +1,6 @@
 package main.listeners;
 
+import sun.plugin2.message.Message;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
@@ -15,6 +16,8 @@ import java.util.ArrayList;
 
 public class MessageListener {
     private List<String> factionList = Arrays.asList("Sturgians", "Aserai", "Khuzaits", "Baltanians", "Vlandians");
+
+    String URL = "jdbc:mysql://198.21.226.121/gjengli";
 
     @EventSubscriber
     public void onMessagReceivedEvent(MessageReceivedEvent e) throws RateLimitException, DiscordException, MissingPermissionsException {
@@ -38,7 +41,7 @@ public class MessageListener {
                 break;
             case "!user":
                 if(msg.length == 2) {
-                    ArrayList<String> stat = viewOtherUser(msg[1]);
+                    ArrayList<String> stat = viewOtherUser(msg[1], e);
                     sendUserStat(stat, e);
                 }
                 else {
@@ -69,7 +72,7 @@ public class MessageListener {
     public void updateRole(String author, String role){
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String url = "jdbc:mysql://198.21.229.86/gjengli";
+            String url = URL;
             Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
             Statement state = conn.createStatement();
             state.executeUpdate("UPDATE Users SET Roles = '" + role + "' WHERE Username = '" + author + "'");
@@ -89,7 +92,7 @@ public class MessageListener {
     public boolean signUp(MessageReceivedEvent m){
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String url = "jdbc:mysql://198.21.229.86/gjengli";
+            String url = URL;
             Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT Username from Users WHERE Username = '" + m.getMessage().getAuthor().getName().toString() + "'");
@@ -97,6 +100,7 @@ public class MessageListener {
                 return true;
             }
             state.executeUpdate("INSERT IGNORE INTO `Users` (`Username`, `Roles`) VALUES (" + "'" + m.getMessage().getAuthor().getName().toString() + "'" + "," + "'Samurai'" + ")");
+            state.executeUpdate("INSERT IGNORE INTO `Stats` (`Username`, `Wins`, `Losses`, `Kills`, `Deaths`, `Ranks`) VALUES (" + "'" + m.getMessage().getAuthor().getName().toString() + "'" + ",'0'" + ",'0'" + ",'0'" + ",'0'" + ",'0'" + ")");
         } catch (SQLException e) {
             System.out.println("WE NOT GETTING INTO DA DATABASE");
             System.err.println(e.getMessage());
@@ -130,16 +134,20 @@ public class MessageListener {
         }
     }
 
-    public ArrayList<String> viewOtherUser(String otherUser) {
-        String user, win, loss, kills, death;
+    public ArrayList<String> viewOtherUser(String otherUser, MessageReceivedEvent m) throws RateLimitException, DiscordException, MissingPermissionsException {
+    String user, win, loss, kills, death;
         user = win = loss = kills = death = null;
         ArrayList<String> stats = new ArrayList<String>();
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String url = "jdbc:mysql://198.21.229.86/gjengli";
+            String url = URL;
             Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT * from Stats WHERE Username = '" + otherUser + "'");
+            if(!result.next()) {
+                m.getMessage().reply("No User with that name! Sorry :frowning:");
+                return null;
+            }
 
             while (result.next()) {
                 user = result.getString("Username");
@@ -174,10 +182,9 @@ public class MessageListener {
         ArrayList<String> stats = new ArrayList<String>();
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String url = "jdbc:mysql://198.21.229.86/gjengli";
+            String url = URL;
             Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
             Statement state = conn.createStatement();
-//            ResultSet result = state.executeQuery("SELECT Username from Users WHERE Username = '" + m.getMessage().getAuthor().getName().toString() + "'");
             ResultSet result = state.executeQuery("SELECT * from Stats WHERE Username = '" + m.getMessage().getAuthor().getName().toString() + "'");
             while (result.next()) {
                 user = result.getString("Username");
@@ -210,7 +217,7 @@ public class MessageListener {
         String role = null;
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
-            String url = "jdbc:mysql://198.21.229.86/gjengli";
+            String url = URL;
             Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT Roles from Users WHERE Username = '" + m.getMessage().getAuthor().getName().toString() + "'");
@@ -240,9 +247,11 @@ public class MessageListener {
         e.getMessage().getChannel().sendMessage(msg);
     }
     private void sendUserStat(ArrayList<String> msg, MessageReceivedEvent e) throws RateLimitException, DiscordException, MissingPermissionsException {
-        e.getMessage().getChannel().sendMessage("Username | Wins | Losses | Kills | Deaths ");
-        String app = String.join("\t", msg);
-        e.getMessage().getChannel().sendMessage(app.toString());
+        if(msg != null) {
+            e.getMessage().getChannel().sendMessage("Username | Wins | Losses | Kills | Deaths ");
+            String app = String.join("\t", msg);
+            e.getMessage().getChannel().sendMessage(app.toString());
+        }
     }
 }
 
