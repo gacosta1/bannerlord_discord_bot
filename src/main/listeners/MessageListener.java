@@ -1,6 +1,5 @@
 package main.listeners;
 
-import sun.plugin2.message.Message;
 import sx.blah.discord.api.events.EventSubscriber;
 import sx.blah.discord.handle.impl.events.MessageReceivedEvent;
 import sx.blah.discord.handle.obj.IRole;
