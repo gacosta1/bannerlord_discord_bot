@@ -16,10 +16,12 @@ import java.util.ArrayList;
 public class MessageListener {
     private List<String> factionList = Arrays.asList("Sturgians", "Aserai", "Khuzaits", "Baltanians", "Vlandians");
 
-    String URL = "jdbc:mysql://198.21.226.121/gjengli";
+    String URL = "jdbc:mysql://192.168.0.143/gjengli";
+    String db = "CATS";
+    String pass = "ragar375";
 
     @EventSubscriber
-    public void onMessagReceivedEvent(MessageReceivedEvent e) throws RateLimitException, DiscordException, MissingPermissionsException {
+    public void onMessagReceivedEvent(MessageReceivedEvent e) throws InterruptedException, RateLimitException, DiscordException, MissingPermissionsException {
         String msg[] = e.getMessage().getContent().split(" ");
         switch (msg[0]) {
             case "!factions" :
@@ -39,8 +41,8 @@ public class MessageListener {
                 sendMessage(e.getMessage().getAuthor().getName() + " rolled " + Integer.toString((int)(Math.random() * 100)), e);
                 break;
             case "!user":
-                if(msg.length == 2) {
-                    ArrayList<String> stat = viewOtherUser(msg[1], e);
+                if(msg.length > 1) {
+                    ArrayList<String> stat = viewOtherUser(msg, e);
                     sendUserStat(stat, e);
                 }
                 else {
@@ -50,7 +52,7 @@ public class MessageListener {
                 break;
             case "!role":
                 String role = databaseRole(e);
-                if(msg.length == 2) {
+                if(msg.length > 1) {
                     updateRole(e.getMessage().getAuthor().getName(), msg[1]);
                     e.getMessage().reply("\nYour role has been updated!");
                 }
@@ -69,10 +71,11 @@ public class MessageListener {
 
     }
     public void updateRole(String author, String role){
+        System.out.println("THE AUTHOR IS" + author);
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
-            Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
+            Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
             state.executeUpdate("UPDATE Users SET Roles = '" + role + "' WHERE Username = '" + author + "'");
         } catch (SQLException e) {
@@ -92,7 +95,7 @@ public class MessageListener {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
-            Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
+            Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT Username from Users WHERE Username = '" + m.getMessage().getAuthor().getName().toString() + "'");
             if(result.next()){
@@ -133,16 +136,20 @@ public class MessageListener {
         }
     }
 
-    public ArrayList<String> viewOtherUser(String otherUser, MessageReceivedEvent m) throws RateLimitException, DiscordException, MissingPermissionsException {
+    public ArrayList<String> viewOtherUser(String otherUser[], MessageReceivedEvent m) throws InterruptedException, RateLimitException, DiscordException, MissingPermissionsException {
     String user, win, loss, kills, death;
         user = win = loss = kills = death = null;
         ArrayList<String> stats = new ArrayList<String>();
+
+        String userName = Arrays.toString(otherUser);
+        userName = userName.substring(8, userName.length()-1);
+        userName = userName.replace(",", "");
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
-            Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
+            Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
-            ResultSet result = state.executeQuery("SELECT * from Stats WHERE Username = '" + otherUser + "'");
+            ResultSet result = state.executeQuery("SELECT * from Stats WHERE Username = '" + userName + "'");
             if(!result.isBeforeFirst()) {
                 m.getMessage().reply("No User with that name! Sorry :frowning:");
                 return null;
@@ -184,7 +191,7 @@ public class MessageListener {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
-            Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
+            Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT * from Stats WHERE Username = '" + m.getMessage().getAuthor().getName().toString() + "'");
             while (result.next()) {
@@ -219,7 +226,7 @@ public class MessageListener {
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
-            Connection conn = DriverManager.getConnection(url, "CATS", "ragar375");
+            Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
             ResultSet result = state.executeQuery("SELECT Roles from Users WHERE Username = '" + m.getMessage().getAuthor().getName().toString() + "'");
 
