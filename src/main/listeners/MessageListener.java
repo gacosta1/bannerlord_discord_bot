@@ -258,8 +258,8 @@ public class MessageListener {
             if(result.next()){
                 return true;
             }
-            state.executeUpdate("INSERT IGNORE INTO `Users` (`Username`, `Roles`) VALUES (" + "'" + m.getMessage().getAuthor().getName() + "'" + "," + "'Samurai'" + ")");
-            state.executeUpdate("INSERT IGNORE INTO `Stats` (`Username`, `Wins`, `Losses`, `Kills`, `Deaths`, `Ranks`) VALUES (" + "'" + m.getMessage().getAuthor().getName() + "'" + ",'0'" + ",'0'" + ",'0'" + ",'0'" + ",'0'" + ")");
+            state.executeUpdate("INSERT IGNORE INTO `Users` (`Username`, `User_id`, `Roles`) VALUES (" + "'" + m.getMessage().getAuthor().getName() + "'" + "," + "'" + m.getMessage().getAuthor().getID() + "'" + "," + "'Samurai'" + ")");
+            state.executeUpdate("INSERT IGNORE INTO `Stats` (`Username`, `User_id`, `Wins`, `Losses`, `Kills`, `Deaths`, `Ranks`) VALUES (" + "'" + m.getMessage().getAuthor().getName() + "'" + "'" + m.getMessage().getAuthor().getID() + "'" + ",'0'" + ",'0'" + ",'0'" + ",'0'" + ",'0'" + ")");
         } catch (SQLException e) {
             System.out.println("WE NOT GETTING INTO DA DATABASE");
             System.err.println(e.getMessage());
@@ -296,12 +296,28 @@ public class MessageListener {
         String userName = Arrays.toString(otherUser);
         userName = userName.substring(8, userName.length()-1);
         userName = userName.replace(",", "");
+        
         try {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
             Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
-            ResultSet result = state.executeQuery("SELECT * from Stats WHERE Username = '" + userName + "'");
+            ResultSet result = null;
+
+            if(userName.substring(1, 3).equals("@!")) {
+                userName = userName.substring(userName.indexOf("<") + 1, userName.indexOf(">"));
+                userName = userName.substring(2, userName.length()).trim();
+                result = state.executeQuery("SELECT * from Stats WHERE User_id = '" + userName + "'");
+            }
+            else if(userName.substring(1, 2).equals("@")){
+                userName = userName.substring(userName.indexOf("<") + 1, userName.indexOf(">"));
+                userName = userName.substring(1, userName.length()).trim();
+                result = state.executeQuery("SELECT * from Stats WHERE User_id = '" + userName + "'");
+            }
+            else {
+                result = state.executeQuery("SELECT * from Stats WHERE Username = '" + userName + "'");
+            }
+
             if(!result.isBeforeFirst()) {
                 m.getMessage().reply("No User with that name! Sorry :frowning:");
                 return null;
