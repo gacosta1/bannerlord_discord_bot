@@ -203,7 +203,7 @@ public class MessageListener {
             str = str.replace(",", "");
             str = str.substring(str.indexOf("<") + 1, str.indexOf(">"));
 
-            Class.forName("com.mysql.jdbc.Drive").newInstance();
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
             Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
@@ -218,7 +218,7 @@ public class MessageListener {
 
     private void clearEvent(String msg[]) throws InstantiationException, IllegalAccessException {
         try {
-            Class.forName("com.mysql.jdbc.Drive").newInstance();
+            Class.forName("com.mysql.jdbc.Driver").newInstance();
             String url = URL;
             Connection conn = DriverManager.getConnection(url, db, pass);
             Statement state = conn.createStatement();
